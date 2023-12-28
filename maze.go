@@ -1,6 +1,8 @@
 package mazego
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 const (
 	DefaultColumns    uint8   = 10
