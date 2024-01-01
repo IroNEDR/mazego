@@ -17,25 +17,25 @@ func NewStack[T any]() *Stack[T] {
 	return &Stack[T]{sync.Mutex{}, make([]T, 0)}
 }
 
-func (s *Stack[T]) Push(t T) {
+func (s *Stack[T]) Push(t *T) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	s.content = append(s.content, t)
+	s.content = append(s.content, *t)
 }
 
-func (s *Stack[T]) Pop() (T, error) {
+func (s *Stack[T]) Pop() (*T, error) {
 	var t T
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
 	if len(s.content) == 0 {
-		return t, EmptyStackError
+		return &t, EmptyStackError
 	}
 
 	t = s.content[len(s.content)-1]
 	s.content = s.content[:len(s.content)-1]
-	return t, nil
+	return &t, nil
 }
 
 func (s *Stack[T]) Peek() (T, error) {
@@ -48,6 +48,13 @@ func (s *Stack[T]) Peek() (T, error) {
 	}
 
 	return s.content[len(s.content)-1], nil
+}
+
+func (s *Stack[T]) Len() int {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	return len(s.content)
 }
 
 type Node[T any] struct {
